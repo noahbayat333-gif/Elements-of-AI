@@ -1,0 +1,31 @@
+def umbrella_advisor(weather, rain_chance):
+    """
+    Simple AI-like decision system.
+    weather: "sunny", "cloudy", or "rainy"
+    rain_chance: percentage (0-100)
+    """
+
+    if weather.lower() == "rainy":
+        return "Bring an umbrella"
+
+    elif weather.lower() == "cloudy":
+        if rain_chance >= 50:
+            return "Bring an umbrella"
+        else:
+            return "You probably don't need an umbrella."
+
+    elif weather.lower() == "sunny":
+        if rain_chance >= 70:
+            return "There is still a good chance of rain. Bring an umbrella."
+        else:
+            return "Enjoy the sunshine!"
+
+    else:
+        return "Unknown weather."
+
+# Example
+weather = input("Enter the weather (sunny/cloudy/rainy): ")
+chance = int(input("Chance of rain (%): "))
+
+result = umbrella_advisor(weather, chance)
+print(result)
