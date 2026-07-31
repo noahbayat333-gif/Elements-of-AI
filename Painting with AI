@@ -1,31 +1,52 @@
-def umbrella_advisor(weather, rain_chance):
-    """
-    Simple AI-like decision system.
-    weather: "sunny", "cloudy", or "rainy"
-    rain_chance: percentage (0-100)
-    """
+let brushMode = 1, lastX = 0, lastY = 0;
 
-    if weather.lower() == "rainy":
-        return "Bring an umbrella"
+function setup() {
+  createCanvas(400, 400);
+  background(14, 18, 32); // Blank midnight canvas
+}
 
-    elif weather.lower() == "cloudy":
-        if rain_chance >= 50:
-            return "Bring an umbrella"
-        else:
-            return "You probably don't need an umbrella."
+function draw() {
+  // PURE HOVER: Draws whenever cursor moves on canvas (NO CLICKING REQUIRED)
+  if (mouseY < 350 && (mouseX !== pmouseX || mouseY !== pmouseY)) {
+    if (brushMode === 1) {
+      // [1] Rain Streaks: Spaced drops (NO thick bars)
+      let d = dist(lastX, lastY, mouseX, mouseY);
+      if (d > 14) {
+        stroke(185, 230, 255, random(180, 240)); strokeWeight(random(1.5, 2.5));
+        let len = random(14, 22);
+        line(mouseX, mouseY, mouseX - 2, mouseY + len);
+        noStroke(); fill(240, 250, 255, 230);
+        ellipse(mouseX - 2, mouseY + len, 3, 4);
+        lastX = mouseX; lastY = mouseY;
+      }
+    } else if (brushMode === 2) {
+      // [2] Crimson Canopy: Smooth vector stroke (NO blotches)
+      stroke(215, 40, 50); strokeWeight(26); strokeCap(ROUND); strokeJoin(ROUND);
+      line(pmouseX, pmouseY, mouseX, mouseY);
+    } else if (brushMode === 3) {
+      // [3] Gold Handle: Smooth gold stroke
+      stroke(225, 175, 40); strokeWeight(7); strokeCap(ROUND); strokeJoin(ROUND);
+      line(pmouseX, pmouseY, mouseX, mouseY);
+    } else if (brushMode === 4) {
+      // [4] Clouds: Soft translucent sky shading
+      stroke(40, 50, 75, 25); strokeWeight(45); strokeCap(ROUND); strokeJoin(ROUND);
+      line(pmouseX, pmouseY, mouseX, mouseY);
+    } else if (brushMode === 5) {
+      // [5] Eraser: Background eraser
+      stroke(14, 18, 32); strokeWeight(30); strokeCap(ROUND); strokeJoin(ROUND);
+      line(pmouseX, pmouseY, mouseX, mouseY);
+    }
+  }
+  drawHUD();
+}
 
-    elif weather.lower() == "sunny":
-        if rain_chance >= 70:
-            return "There is still a good chance of rain. Bring an umbrella."
-        else:
-            return "Enjoy the sunshine!"
+function drawHUD() {
+  noStroke(); fill(10, 12, 22); rect(0, 350, 400, 50);
+  fill(220, 235, 255); textSize(11); textAlign(CENTER);
+  let names = ["", "1:Rain", "2:Red Canopy", "3:Gold Handle", "4:Clouds", "5:Eraser"];
+  text("Keys [1-5] Switch Brush | Active: " + names[brushMode], 200, 378);
+}
 
-    else:
-        return "Unknown weather."
-
-# Example
-weather = input("Enter the weather (sunny/cloudy/rainy): ")
-chance = int(input("Chance of rain (%): "))
-
-result = umbrella_advisor(weather, chance)
-print(result)
+function keyPressed() {
+  if (key >= '1' && key <= '5') brushMode = int(key);
+}
